@@ -7,4 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="ItemCharacterCardBackground">#F4F4F4</color>
+    <color name="RootBackground">#B1B1B1</color>
+    <color name="ItemCharacterTextColor">#FF000000</color>
 </resources>
