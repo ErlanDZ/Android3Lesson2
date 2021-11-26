@@ -5,11 +5,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.android3lesson2.data.network.dtos.сharacter.Character;
+import com.example.android3lesson2.data.network.onItemClick.OnItemClick;
+import com.example.android3lesson2.data.network.onItemClick.OnLongClick;
 import com.example.android3lesson2.databinding.ItemCharacterBinding;
+import com.example.android3lesson2.ui.fragments.character.DialogCharacterFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +21,25 @@ import java.util.List;
 public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.ViewHolder> {
     
     List<Character> list = new ArrayList<>();
+    public OnItemClick onItemClickCharacter;
+
+    public OnLongClick onLongClick;
+
 
 
     public void addList(List<Character> list){
-        this.list = list;
+        this.list.addAll(list);
         notifyDataSetChanged();
     }
+
+    public void setOnItemClickListener(OnItemClick listener) {
+        this.onItemClickCharacter = listener;
+    }
+
+    public void setLongOnItemClickListener(OnLongClick onItemClick){
+        this.onLongClick = onItemClick;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -55,6 +72,16 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.View
             Glide.with(binding.imageCharacter)
                     .load(character.getImage())
                     .into(binding.imageCharacter);
+
+               binding.getRoot().setOnClickListener(view -> {
+                   onItemClickCharacter.onClickItemListener(character.getId());
+               });
+
+               binding.getRoot().setOnLongClickListener(view -> {
+                   onLongClick.onLongClickItemListener(getAdapterPosition(), character);
+                   return false;
+               });
+
         }
     }
 }

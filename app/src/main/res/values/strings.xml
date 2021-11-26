@@ -5,4 +5,14 @@
     <string name="character">Character</string>
     <string name="location">Location</string>
     <string name="episode">Episode</string>
+    <string name="id">NUMBER ID:</string>
+    <string name="location_name">LOCATION NAME:</string>
+    <string name="type">TYPE:</string>
+    <string name="dimension">DIMENSION:</string>
+    <string name="gender">GENDER:</string>
+    <string name="hyphen">-</string>
+    <string name="episode_name">EPISODE NAME:</string>
+    <string name="air_date">AIR DATE:</string>
+    <string name="episod">EPISODE:</string>
+    <string name="created">CREATED:</string>
 </resources>

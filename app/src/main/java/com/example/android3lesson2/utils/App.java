@@ -1,4 +1,4 @@
-package com.example.android3lesson2;
+package com.example.android3lesson2.utils;
 
 import android.app.Application;
 
@@ -15,9 +15,10 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        characterApiService = new RetrofitClient().provideCharacterApiService();
-        locationApiService = new RetrofitClient().provideLocationApiService();
-        episodeApiService = new RetrofitClient().provideEpisodeApiService();
+        RetrofitClient retrofitClient = new RetrofitClient();
+        characterApiService = retrofitClient.provideCharacterApiService();
+        locationApiService = retrofitClient.provideLocationApiService();
+        episodeApiService = retrofitClient.provideEpisodeApiService();
 
 
     }

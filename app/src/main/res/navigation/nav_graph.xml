@@ -9,15 +9,67 @@
         android:id="@+id/characterFragment"
         android:name="com.example.android3lesson2.ui.fragments.character.CharacterFragment"
         android:label="fragment_character"
-        tools:layout="@layout/fragment_character" />
+        tools:layout="@layout/fragment_character" >
+        <action
+            android:id="@+id/action_characterFragment_to_characterDetailFragment"
+            app:destination="@id/characterDetailFragment" />
+        <action
+            android:id="@+id/action_characterFragment_to_dialogCharacterFragment"
+            app:destination="@id/dialogCharacterFragment" />
+    </fragment>
     <fragment
         android:id="@+id/episodeFragment"
         android:name="com.example.android3lesson2.ui.fragments.episode.EpisodeFragment"
         android:label="fragment_episode"
-        tools:layout="@layout/fragment_episode" />
+        tools:layout="@layout/fragment_episode" >
+        <action
+            android:id="@+id/action_episodeFragment_to_episodeDetailFragment"
+            app:destination="@id/episodeDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/locationFragment"
         android:name="com.example.android3lesson2.ui.fragments.location.LocationFragment"
         android:label="fragment_location"
-        tools:layout="@layout/fragment_location" />
+        tools:layout="@layout/fragment_location" >
+        <action
+            android:id="@+id/action_locationFragment_to_locationDetailFragment"
+            app:destination="@id/locationDetailFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/characterDetailFragment"
+        android:name="com.example.android3lesson2.ui.fragments.character.detail.CharacterDetailFragment"
+        android:label="fragment_caracter_detail"
+        tools:layout="@layout/fragment_caracter_detail" >
+        <argument
+            android:name="id"
+            app:argType="integer" />
+    </fragment>
+    <dialog
+        android:id="@+id/dialogCharacterFragment"
+        android:name="com.example.android3lesson2.ui.fragments.character.DialogCharacterFragment"
+        android:label="fragment_dialog_character"
+        tools:layout="@layout/fragment_dialog_character" >
+        <argument
+            android:name="image"
+            app:argType="string" />
+    </dialog>
+    <fragment
+        android:id="@+id/episodeDetailFragment"
+        android:name="com.example.android3lesson2.ui.fragments.episode.detail.EpisodeDetailFragment"
+        android:label="fragment_episode_detail"
+        tools:layout="@layout/fragment_episode_detail" >
+        <argument
+            android:name="id"
+            app:argType="integer"/>
+    </fragment>
+    <fragment
+        android:id="@+id/locationDetailFragment"
+        android:name="com.example.android3lesson2.ui.fragments.location.detail.LocationDetailFragment"
+        android:label="fragment_location_detail"
+        tools:layout="@layout/fragment_location_detail">
+        <argument
+            android:name="id"
+            app:argType="integer" />
+    </fragment>
 </navigation>

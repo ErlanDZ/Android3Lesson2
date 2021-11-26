@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android3lesson2.data.network.dtos.location.LocationModel;
+import com.example.android3lesson2.data.network.onItemClick.OnItemClick;
+import com.example.android3lesson2.data.network.onItemClick.OnLongClick;
 import com.example.android3lesson2.databinding.ItemLocationBinding;
 
 import java.util.ArrayList;
@@ -16,12 +18,16 @@ import java.util.List;
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHolder> {
 
     List<LocationModel> list = new ArrayList<>();
+    public OnItemClick onItemClickLocation ;
 
 
 
     public void addListLoc(List<LocationModel> models){
-        this.list = models;
+        this.list.addAll(models);
         notifyDataSetChanged();
+    }
+    public void setOnItemClickListener(OnItemClick listener){
+        this.onItemClickLocation = listener;
     }
 
     @NonNull
@@ -52,8 +58,11 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
 
         public void bind (LocationModel model){
             binding.txtNameLocation.setText(model.getName());
-            binding.txtDimensionLocation.setText(model.getDimension());
             binding.txtTypeLocation.setText(model.getType());
+
+            binding.getRoot().setOnClickListener(view -> {
+                onItemClickLocation.onClickItemListener(model.getId());
+            });
         }
     }
 }

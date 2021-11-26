@@ -3,13 +3,21 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/user/AndroidStudioProjects/Android3Lesson2/app/src/main/res/drawable-v24/oval.xml" value="0.20260416666666667" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/Android3Lesson2/app/src/main/res/drawable/oval1.xml" value="0.20260416666666667" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/Android3Lesson2/app/src/main/res/drawable/oval2.xml" value="0.20260416666666667" />
         <entry key="..\:/Users/user/AndroidStudioProjects/Android3Lesson2/app/src/main/res/layout/activity_main.xml" value="0.18645833333333334" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/Android3Lesson2/app/src/main/res/layout/fragment_character.xml" value="0.18645833333333334" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/Android3Lesson2/app/src/main/res/layout/fragment_caracter_detail.xml" value="0.33" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/Android3Lesson2/app/src/main/res/layout/fragment_character.xml" value="0.2" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/Android3Lesson2/app/src/main/res/layout/fragment_dialog_character.xml" value="0.18645833333333334" />
         <entry key="..\:/Users/user/AndroidStudioProjects/Android3Lesson2/app/src/main/res/layout/fragment_episode.xml" value="0.18645833333333334" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/Android3Lesson2/app/src/main/res/layout/fragment_episode_detail.xml" value="0.22" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/Android3Lesson2/app/src/main/res/layout/fragment_episode_detail_view_model.xml" value="0.1" />
         <entry key="..\:/Users/user/AndroidStudioProjects/Android3Lesson2/app/src/main/res/layout/fragment_location.xml" value="0.18645833333333334" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/Android3Lesson2/app/src/main/res/layout/fragment_location_detail.xml" value="0.33" />
         <entry key="..\:/Users/user/AndroidStudioProjects/Android3Lesson2/app/src/main/res/layout/item_character.xml" value="0.18645833333333334" />
         <entry key="..\:/Users/user/AndroidStudioProjects/Android3Lesson2/app/src/main/res/layout/item_episode.xml" value="0.18645833333333334" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/Android3Lesson2/app/src/main/res/layout/item_location.xml" value="0.18645833333333334" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/Android3Lesson2/app/src/main/res/layout/item_location.xml" value="0.33" />
         <entry key="..\:/Users/user/AndroidStudioProjects/Android3Lesson2/app/src/main/res/menu/bottom_navigation.xml" value="0.75" />
       </map>
     </option>

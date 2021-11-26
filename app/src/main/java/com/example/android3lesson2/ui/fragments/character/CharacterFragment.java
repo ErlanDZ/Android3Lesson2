@@ -1,58 +1,113 @@
 package com.example.android3lesson2.ui.fragments.character;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.android3lesson2.R;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.android3lesson2.adapters.CharacterAdapter;
+import com.example.android3lesson2.base.BaseFragment;
+import com.example.android3lesson2.data.network.dtos.RickAndMortyResponse;
+import com.example.android3lesson2.data.network.dtos.сharacter.Character;
+import com.example.android3lesson2.data.network.onItemClick.OnItemClick;
 import com.example.android3lesson2.databinding.FragmentCharacterBinding;
 
 
-public class CharacterFragment extends Fragment {
+public class CharacterFragment extends BaseFragment<CharacterViewModel, FragmentCharacterBinding> {
 
-    FragmentCharacterBinding binding;
-    CharacterViewModel viewModel;
-    private CharacterAdapter adapter = new CharacterAdapter();
+    private final CharacterAdapter adapter = new CharacterAdapter();
+    private LinearLayoutManager layoutManager;
+    private int totalItemCount, visibleItemCount, pastVisibleItems;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentCharacterBinding.inflate(getLayoutInflater(),container,false);
+        binding = FragmentCharacterBinding.inflate(getLayoutInflater(), container, false);
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initialization();
-        setupViews();
-        setUpObservers();
-    }
-
-    private void setUpObservers() {
-        viewModel.fetchCharacters().observe(getViewLifecycleOwner(), character -> {
-            adapter.addList(character.getResults());
-        });
-    }
-
-    private void setupViews() {
-        binding.recyclerCharacter.setLayoutManager(new LinearLayoutManager(getContext()));
+    protected void initialization() {
+        layoutManager = new LinearLayoutManager(getContext());
+        viewModel = new ViewModelProvider(this).get(CharacterViewModel.class);
+        binding.recyclerCharacter.setLayoutManager(layoutManager);
         binding.recyclerCharacter.setAdapter(adapter);
     }
 
-    private void initialization() {
-        viewModel = new ViewModelProvider(this).get(CharacterViewModel.class);
+    @Override
+    protected void setupListeners() {
+        adapter.setOnItemClickListener(new OnItemClick() {
+            @Override
+            public void onClickItemListener(int id) {
+                Navigation.findNavController(CharacterFragment.this.requireView()).navigate(
+                        CharacterFragmentDirections.actionCharacterFragmentToCharacterDetailFragment(id)
+                );
+            }
+        });
+
+        adapter.setLongOnItemClickListener((position, model) -> Navigation
+                .findNavController(CharacterFragment.this.requireView()).navigate(
+                        CharacterFragmentDirections.actionCharacterFragmentToDialogCharacterFragment(model.getImage())));
     }
+
+
+    @Override
+    protected void setUpObservers() {
+        viewModel.loadingCharacter().observe(getViewLifecycleOwner(), isLoading -> {
+            if (isLoading) {
+                binding.loaderCharacter.setVisibility(View.VISIBLE);
+                binding.recyclerCharacter.setVisibility(View.GONE);
+            } else {
+                binding.loaderCharacter.setVisibility(View.GONE);
+                binding.recyclerCharacter.setVisibility(View.VISIBLE);
+            }
+        });
+
+        viewModel.fetchCharacters().observe(getViewLifecycleOwner(), character -> {
+            if (character != null){
+            adapter.addList(character.getResults());
+            String next = character.getInfo().getNext();
+            if (next != null) {
+                binding.recyclerCharacter.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        if (dy > 0) {
+                            viewModel.loadingCharacter().observe(getViewLifecycleOwner(), isLoading -> {
+                                if (isLoading) {
+                                    binding.loaderCharacter.setVisibility(View.GONE);
+                                    binding.recyclerCharacter.setVisibility(View.VISIBLE);
+                                    binding.loaderCharacterBar.setVisibility(View.VISIBLE);
+                                } else {
+                                    binding.loaderCharacterBar.setVisibility(View.GONE);
+                                }
+                            });
+                            visibleItemCount = layoutManager.getChildCount();
+                            totalItemCount = layoutManager.getItemCount();
+                            pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+                            if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                                viewModel.page++;
+                                viewModel.fetchCharacters().observe(getViewLifecycleOwner(), character1 -> {
+                                    if (character1 != null) {
+                                        adapter.addList(character1.getResults());
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+            }
+        });
+    }
+
 
     @Override
     public void onDestroyView() {

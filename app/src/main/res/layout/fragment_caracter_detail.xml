@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.fragments.character.detail.CharacterDetailFragment">
+
+    <ProgressBar
+        android:id="@+id/loader_character_detail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/image_character_detail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="@dimen/size15"
+        android:layout_marginTop="30dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        tools:ignore="ContentDescription"
+        tools:src="@tools:sample/avatars"/>
+
+    <TextView
+        android:id="@+id/id"
+        app:layout_constraintStart_toStartOf="@id/image_character_detail"
+        android:text="@string/id"
+        app:layout_constraintBottom_toBottomOf="@id/txt_id_character_detail"
+        android:textSize="@dimen/sp15"
+        android:textColor="@color/grey1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/txt_id_character_detail"
+        app:layout_constraintTop_toBottomOf="@id/image_character_detail"
+        android:layout_marginTop="@dimen/size10"
+        android:layout_marginStart="@dimen/size10"
+        app:layout_constraintStart_toEndOf="@id/id"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp20"
+        tools:text="@tools:sample/lorem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_marginTop="@dimen/size15"
+        android:textColor="@color/grey1"
+        app:layout_constraintTop_toBottomOf="@id/id"
+        app:layout_constraintStart_toStartOf="@id/id"
+        android:text="@string/location_name"
+        android:textSize="@dimen/sp15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+    <TextView
+        android:id="@+id/txt_name_character_detail"
+        app:layout_constraintTop_toBottomOf="@id/name"
+        app:layout_constraintStart_toStartOf="@id/name"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp20"
+        tools:text="@tools:sample/lorem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <View
+        android:id="@+id/view_status"
+        app:layout_constraintStart_toStartOf="@id/name"
+        app:layout_constraintTop_toBottomOf="@id/txt_name_character_detail"
+        app:circularflow_defaultRadius="30dp"
+        android:layout_marginTop="@dimen/size25"
+        android:background="@drawable/oval2"
+        android:layout_width="@dimen/size15"
+        android:layout_height="@dimen/size15"/>
+
+    <TextView
+        android:id="@+id/txt_status_character_detail"
+        app:layout_constraintStart_toEndOf="@id/view_status"
+        android:layout_marginStart="@dimen/size10"
+       app:layout_constraintBottom_toBottomOf="@id/view_status"
+        android:layout_marginTop="@dimen/size10"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp20"
+        tools:text="status -"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/txt_species_character_detail"
+        app:layout_constraintStart_toEndOf="@id/hyphen"
+        android:layout_marginStart="@dimen/size10"
+        android:layout_marginTop="@dimen/size10"
+        app:layout_constraintBottom_toBottomOf="@id/view_status"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp20"
+        tools:text="species"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/hyphen"
+        app:layout_constraintStart_toEndOf="@id/txt_status_character_detail"
+        android:layout_marginStart="@dimen/size10"
+        android:layout_marginTop="@dimen/size10"
+        app:layout_constraintBottom_toBottomOf="@id/view_status"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp20"
+        android:text="@string/hyphen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+
+    <TextView
+        android:id="@+id/gender"
+        app:layout_constraintStart_toStartOf="@id/view_status"
+        app:layout_constraintTop_toBottomOf="@id/view_status"
+        android:layout_marginTop="@dimen/size25"
+        android:textColor="@color/grey1"
+        android:textSize="@dimen/sp12"
+        android:text="@string/gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/txt_gender_character_detail"
+        app:layout_constraintStart_toStartOf="@id/gender"
+        app:layout_constraintTop_toBottomOf="@id/gender"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp24"
+        tools:text="@string/gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

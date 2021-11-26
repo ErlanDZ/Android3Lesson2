@@ -6,8 +6,11 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="white">#FFFDD0</color>
     <color name="ItemCharacterCardBackground">#F4F4F4</color>
-    <color name="RootBackground">#B1B1B1</color>
+    <color name="RootBackground">#3A3A3A</color>
     <color name="ItemCharacterTextColor">#FF000000</color>
+    <color name="bright_green">#66FF00</color>
+    <color name="red">	#FF0000</color>
+    <color name="grey1">#888887</color>
 </resources>

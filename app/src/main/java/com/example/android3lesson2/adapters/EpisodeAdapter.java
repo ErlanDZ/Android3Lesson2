@@ -1,12 +1,14 @@
 package com.example.android3lesson2.adapters;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android3lesson2.data.network.dtos.episode.EpisodeModel;
+import com.example.android3lesson2.data.network.onItemClick.OnItemClick;
 import com.example.android3lesson2.databinding.ItemEpisodeBinding;
 
 import java.util.ArrayList;
@@ -15,10 +17,15 @@ import java.util.List;
 public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHolder> {
 
     List<EpisodeModel> list = new ArrayList<>();
+    public OnItemClick onItemClickEpisode;
 
     public void addList(List<EpisodeModel> models){
-        this.list = models;
+        this.list.addAll(models);
         notifyDataSetChanged();
+    }
+
+    public void setOnItemClickListener(OnItemClick listener){
+        this.onItemClickEpisode = listener;
     }
 
     @NonNull
@@ -49,9 +56,10 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
         public void bind (EpisodeModel model){
             binding.txtNameEpisode.setText(model.getName());
             binding.txtAirDateEpisode.setText(model.getAir_date());
-            binding.txtEpisodeEpisode.setText(model.getEpisode());
-            binding.txtUrlEpisode.setText(model.getUrl());
-            binding.txtCreatedEpisode.setText(model.getCreated());
+
+            binding.getRoot().setOnClickListener(view -> {
+        onItemClickEpisode.onClickItemListener(model.getId());
+            });
         }
     }
 }

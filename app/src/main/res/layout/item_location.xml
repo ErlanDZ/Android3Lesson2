@@ -2,9 +2,9 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="@dimen/size15"
+    android:layout_margin="@dimen/size8"
     android:background="@color/ItemCharacterCardBackground"
-    app:cardCornerRadius="@dimen/size10"
+    app:cardCornerRadius="@dimen/size8"
     app:cardElevation="@dimen/size10"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -15,28 +15,44 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/name"
+            android:layout_marginStart="@dimen/size10"
+            android:layout_marginTop="@dimen/size15"
+            android:textColor="@color/grey1"
+            android:text="@string/location_name"
+            android:textSize="@dimen/sp12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="SmallSp" />
+        <TextView
             android:id="@+id/txt_name_location"
+            android:textColor="@color/white"
             android:layout_marginStart="@dimen/size10"
             tools:text="@tools:sample/lorem"
-            android:textSize="@dimen/sp30"
+            android:textSize="@dimen/sp24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/type"
+            android:layout_marginTop="@dimen/size15"
+            android:layout_marginStart="@dimen/size10"
+            android:text="@string/type"
+            android:textColor="@color/grey1"
+            android:textSize="@dimen/sp10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/txt_type_location"
             android:layout_marginStart="@dimen/size10"
+            android:layout_marginBottom="@dimen/size15"
+            android:textColor="@color/white"
             tools:text="@tools:sample/lorem"
-            android:textSize="@dimen/sp30"
+            android:textSize="@dimen/sp20"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <TextView
-            android:id="@+id/txt_dimension_location"
-            android:layout_marginStart="@dimen/size10"
-            tools:text="@tools:sample/lorem"
-            android:textSize="@dimen/sp30"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
     </LinearLayout>
 
 
