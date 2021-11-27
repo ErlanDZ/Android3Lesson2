@@ -1,12 +1,16 @@
 package com.example.android3lesson2.adapters;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.android3lesson2.data.network.dtos.episode.EpisodeModel;
 import com.example.android3lesson2.data.network.dtos.location.LocationModel;
 import com.example.android3lesson2.data.network.onItemClick.OnItemClick;
 import com.example.android3lesson2.data.network.onItemClick.OnLongClick;
@@ -15,17 +19,16 @@ import com.example.android3lesson2.databinding.ItemLocationBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHolder> {
+public class LocationAdapter extends ListAdapter<LocationModel,LocationAdapter.ViewHolder> {
 
-    List<LocationModel> list = new ArrayList<>();
+
     public OnItemClick onItemClickLocation ;
 
-
-
-    public void addListLoc(List<LocationModel> models){
-        this.list.addAll(models);
-        notifyDataSetChanged();
+    public LocationAdapter(){
+        super(new LocationDiffUtil());
     }
+
+
     public void setOnItemClickListener(OnItemClick listener){
         this.onItemClickLocation = listener;
     }
@@ -39,14 +42,25 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull LocationAdapter.ViewHolder holder, int position) {
-        holder.bind(list.get(position));
+        holder.bind(getItem(position));
 
     }
 
-    @Override
-    public int getItemCount() {
-        return list.size();
+    public static class LocationDiffUtil extends DiffUtil.ItemCallback<LocationModel>{
+
+        @Override
+        public boolean areItemsTheSame(@NonNull LocationModel oldItem, @NonNull LocationModel newItem) {
+            return oldItem.getId() == newItem.getId();
+        }
+
+        @SuppressLint("DiffUtilEquals")
+        @Override
+        public boolean areContentsTheSame(@NonNull LocationModel oldItem, @NonNull LocationModel newItem) {
+            return oldItem == newItem;
+        }
     }
+
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private  ItemLocationBinding binding;

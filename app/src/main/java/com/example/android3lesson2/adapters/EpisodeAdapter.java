@@ -1,30 +1,29 @@
 package com.example.android3lesson2.adapters;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android3lesson2.data.network.dtos.episode.EpisodeModel;
 import com.example.android3lesson2.data.network.onItemClick.OnItemClick;
 import com.example.android3lesson2.databinding.ItemEpisodeBinding;
 
-import java.util.ArrayList;
-import java.util.List;
+public class EpisodeAdapter extends ListAdapter<EpisodeModel, EpisodeAdapter.ViewHolder> {
 
-public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHolder> {
 
-    List<EpisodeModel> list = new ArrayList<>();
     public OnItemClick onItemClickEpisode;
 
-    public void addList(List<EpisodeModel> models){
-        this.list.addAll(models);
-        notifyDataSetChanged();
+    public EpisodeAdapter() {
+        super(new EpisodeDiffUtil());
     }
 
-    public void setOnItemClickListener(OnItemClick listener){
+
+    public void setOnItemClickListener(OnItemClick listener) {
         this.onItemClickEpisode = listener;
     }
 
@@ -36,13 +35,21 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull EpisodeAdapter.ViewHolder holder, int position) {
-        holder.bind(list.get(position));
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.bind(getItem(position));
     }
 
-    @Override
-    public int getItemCount() {
-        return list.size();
+    private static class EpisodeDiffUtil extends DiffUtil.ItemCallback<EpisodeModel> {
+        @Override
+        public boolean areItemsTheSame(@NonNull EpisodeModel oldItem, @NonNull EpisodeModel newItem) {
+            return oldItem.getId() == newItem.getId();
+        }
+
+        @SuppressLint("DiffUtilEquals")
+        @Override
+        public boolean areContentsTheSame(@NonNull EpisodeModel oldItem, @NonNull EpisodeModel newItem) {
+            return oldItem == newItem;
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -53,12 +60,12 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.ViewHold
             this.binding = binding;
         }
 
-        public void bind (EpisodeModel model){
+        public void bind(EpisodeModel model) {
             binding.txtNameEpisode.setText(model.getName());
             binding.txtAirDateEpisode.setText(model.getAir_date());
 
             binding.getRoot().setOnClickListener(view -> {
-        onItemClickEpisode.onClickItemListener(model.getId());
+                onItemClickEpisode.onClickItemListener(model.getId());
             });
         }
     }

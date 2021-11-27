@@ -1,11 +1,15 @@
 package com.example.android3lesson2.adapters;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.AsyncDifferConfig;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -18,19 +22,18 @@ import com.example.android3lesson2.ui.fragments.character.DialogCharacterFragmen
 import java.util.ArrayList;
 import java.util.List;
 
-public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.ViewHolder> {
+public class CharacterAdapter extends ListAdapter<Character, CharacterAdapter.ViewHolder> {
     
-    List<Character> list = new ArrayList<>();
+
     public OnItemClick onItemClickCharacter;
 
     public OnLongClick onLongClick;
 
-
-
-    public void addList(List<Character> list){
-        this.list.addAll(list);
-        notifyDataSetChanged();
+    public CharacterAdapter() {
+        super(new CharacterDiffUtil());
     }
+
+
 
     public void setOnItemClickListener(OnItemClick listener) {
         this.onItemClickCharacter = listener;
@@ -48,16 +51,17 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.View
 
     }
 
-
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(list.get(position));
+        holder.bind(getItem(position));
     }
 
-    @Override
-    public int getItemCount() {
-        return list.size();
-    }
+
+
+//    @Override
+//    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+//        holder.bind(list.get(position));
+//    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private  ItemCharacterBinding binding;
@@ -82,6 +86,19 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.View
                    return false;
                });
 
+        }
+    }
+
+    private static class CharacterDiffUtil extends DiffUtil.ItemCallback<Character> {
+        @Override
+        public boolean areItemsTheSame(@NonNull Character oldItem, @NonNull Character newItem) {
+            return oldItem.getId() == newItem.getId();
+        }
+
+        @SuppressLint("DiffUtilEquals")
+        @Override
+        public boolean areContentsTheSame(@NonNull Character oldItem, @NonNull Character newItem) {
+            return oldItem == newItem;
         }
     }
 }

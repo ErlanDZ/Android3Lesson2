@@ -19,12 +19,15 @@ import com.example.android3lesson2.data.network.dtos.сharacter.Character;
 import com.example.android3lesson2.data.network.onItemClick.OnItemClick;
 import com.example.android3lesson2.databinding.FragmentCharacterBinding;
 
+import java.util.ArrayList;
+
 
 public class CharacterFragment extends BaseFragment<CharacterViewModel, FragmentCharacterBinding> {
 
     private final CharacterAdapter adapter = new CharacterAdapter();
     private LinearLayoutManager layoutManager;
     private int totalItemCount, visibleItemCount, pastVisibleItems;
+    private ArrayList<Character> characters = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,7 +75,8 @@ public class CharacterFragment extends BaseFragment<CharacterViewModel, Fragment
 
         viewModel.fetchCharacters().observe(getViewLifecycleOwner(), character -> {
             if (character != null){
-            adapter.addList(character.getResults());
+                characters.addAll(character.getResults());
+                adapter.submitList(characters);
             String next = character.getInfo().getNext();
             if (next != null) {
                 binding.recyclerCharacter.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -96,7 +100,8 @@ public class CharacterFragment extends BaseFragment<CharacterViewModel, Fragment
                                 viewModel.page++;
                                 viewModel.fetchCharacters().observe(getViewLifecycleOwner(), character1 -> {
                                     if (character1 != null) {
-                                        adapter.addList(character1.getResults());
+                                        characters.addAll(character1.getResults());
+                                        adapter.submitList(characters);
                                     }
                                 });
                             }

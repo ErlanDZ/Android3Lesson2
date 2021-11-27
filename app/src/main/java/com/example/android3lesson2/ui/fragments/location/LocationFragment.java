@@ -18,10 +18,13 @@ import com.example.android3lesson2.data.network.dtos.RickAndMortyResponse;
 import com.example.android3lesson2.data.network.dtos.location.LocationModel;
 import com.example.android3lesson2.databinding.FragmentLocationBinding;
 
+import java.util.ArrayList;
+
 
 public class LocationFragment extends BaseFragment<LocationViewModel, FragmentLocationBinding> {
 
     LocationAdapter adapter = new LocationAdapter();
+    private ArrayList<LocationModel> locationModels = new ArrayList<>();
 
     private LinearLayoutManager layoutManager;
     private int totalItemCount, visibleItemCount, pastVisibleItems;
@@ -65,7 +68,8 @@ public class LocationFragment extends BaseFragment<LocationViewModel, FragmentLo
         });
         viewModel.fetchLocations().observe(getViewLifecycleOwner(), location -> {
             if (location != null){
-                adapter.addListLoc(location.getResults());
+                locationModels.addAll(location.getResults());
+                adapter.submitList(locationModels);
                 String next = location.getInfo().getNext();
                 if (next != null) {
                     binding.recyclerLocation.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -91,7 +95,8 @@ public class LocationFragment extends BaseFragment<LocationViewModel, FragmentLo
                                         @Override
                                         public void onChanged(RickAndMortyResponse<LocationModel> locationModelRickAndMortyResponse) {
                                             if (locationModelRickAndMortyResponse != null) {
-                                                adapter.addListLoc(locationModelRickAndMortyResponse.getResults());
+                                                locationModels.addAll(locationModelRickAndMortyResponse.getResults());
+                                                adapter.submitList(locationModels);
                                             }
                                         }
                                     });

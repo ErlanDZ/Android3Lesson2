@@ -21,12 +21,15 @@ import com.example.android3lesson2.data.network.dtos.RickAndMortyResponse;
 import com.example.android3lesson2.data.network.dtos.episode.EpisodeModel;
 import com.example.android3lesson2.databinding.FragmentEpisodeBinding;
 
+import java.util.ArrayList;
+
 
 public class EpisodeFragment extends BaseFragment<EpisodeViewModel, FragmentEpisodeBinding> {
 
     EpisodeAdapter adapter = new EpisodeAdapter();
     private LinearLayoutManager layoutManager;
     private int totalItemCount, visibleItemCount, pastVisibleItems;
+    private ArrayList<EpisodeModel> episodeModels = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,7 +69,8 @@ public class EpisodeFragment extends BaseFragment<EpisodeViewModel, FragmentEpis
             @Override
             public void onChanged(RickAndMortyResponse<EpisodeModel> episode) {
                 if (episode != null){
-                adapter.addList(episode.getResults());
+                    episodeModels.addAll(episode.getResults());
+                adapter.submitList(episodeModels);
                 String next = episode.getInfo().getNext();
                 if (next != null) {
                     binding.recyclerEpisode.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -91,7 +95,8 @@ public class EpisodeFragment extends BaseFragment<EpisodeViewModel, FragmentEpis
                                     viewModel.page++;
                                     viewModel.fetchEpisodes().observe(getViewLifecycleOwner(), episodeModelRickAndMortyResponse -> {
                                         if (episodeModelRickAndMortyResponse != null) {
-                                            adapter.addList(episodeModelRickAndMortyResponse.getResults());
+                                            episodeModels.addAll(episodeModelRickAndMortyResponse.getResults());
+                                            adapter.submitList(episodeModels);
                                         }
                                     });
                                 }
