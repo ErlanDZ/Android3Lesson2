@@ -1,7 +1,6 @@
 package com.example.android3lesson2.ui.fragments.character.detail;
 
 import android.os.Bundle;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,7 @@ public class CharacterDetailFragment extends BaseFragment<CharacterDetailVIewMod
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentCaracterDetailBinding.inflate(getLayoutInflater(),container,false);
+        binding = FragmentCaracterDetailBinding.inflate(getLayoutInflater(), container, false);
         return binding.getRoot();
     }
 

@@ -1,10 +1,15 @@
 package com.example.android3lesson2.data.network.dtos.сharacter;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 
+@Entity
 public class Character {
 
 
+    @PrimaryKey(autoGenerate = true)
     @SerializedName("id")
     private int id;
 

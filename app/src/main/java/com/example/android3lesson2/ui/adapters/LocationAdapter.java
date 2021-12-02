@@ -1,8 +1,7 @@
-package com.example.android3lesson2.adapters;
+package com.example.android3lesson2.ui.adapters;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -10,14 +9,9 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.android3lesson2.data.network.dtos.episode.EpisodeModel;
 import com.example.android3lesson2.data.network.dtos.location.LocationModel;
 import com.example.android3lesson2.data.network.onItemClick.OnItemClick;
-import com.example.android3lesson2.data.network.onItemClick.OnLongClick;
 import com.example.android3lesson2.databinding.ItemLocationBinding;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class LocationAdapter extends ListAdapter<LocationModel,LocationAdapter.ViewHolder> {
 

@@ -1,13 +1,13 @@
 package com.example.android3lesson2.ui.fragments.character;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.example.android3lesson2.base.BaseViewModel;
 import com.example.android3lesson2.data.network.dtos.RickAndMortyResponse;
 import com.example.android3lesson2.data.network.dtos.сharacter.Character;
 import com.example.android3lesson2.data.repositories.CharacterRepository;
+
+import java.util.List;
 
 public class CharacterViewModel extends BaseViewModel {
 
@@ -18,9 +18,13 @@ public class CharacterViewModel extends BaseViewModel {
     public LiveData<RickAndMortyResponse<Character>> fetchCharacters() {
         return characterRepository.fetchCharacters(page);
     }
-    public LiveData<Boolean> loadingCharacter(){
+
+    public LiveData<Boolean> loadingCharacter() {
         return characterRepository._isLoading;
     }
 
+    List<Character> getCharacter() {
+        return characterRepository.getCharacters();
+    }
 
 }

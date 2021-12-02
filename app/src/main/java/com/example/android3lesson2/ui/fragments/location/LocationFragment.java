@@ -1,9 +1,12 @@
 package com.example.android3lesson2.ui.fragments.location;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
@@ -12,11 +15,12 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.android3lesson2.adapters.LocationAdapter;
 import com.example.android3lesson2.base.BaseFragment;
 import com.example.android3lesson2.data.network.dtos.RickAndMortyResponse;
 import com.example.android3lesson2.data.network.dtos.location.LocationModel;
 import com.example.android3lesson2.databinding.FragmentLocationBinding;
+import com.example.android3lesson2.ui.adapters.LocationAdapter;
+import com.example.android3lesson2.utils.App;
 
 import java.util.ArrayList;
 
@@ -46,8 +50,20 @@ public class LocationFragment extends BaseFragment<LocationViewModel, FragmentLo
 
     @Override
     protected void setupListeners() {
-        adapter.setOnItemClickListener(id -> Navigation.findNavController(LocationFragment.this.
-                requireView()).navigate(LocationFragmentDirections.actionLocationFragmentToLocationDetailFragment(id)));
+
+        adapter.setOnItemClickListener(id -> {
+            if (!isOnline()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                builder.setTitle(Html.fromHtml("<font color='#FF0000'>ФУНКЦИЯ НЕ ДОСТУПНА</font>"));
+                builder.setMessage(Html.fromHtml("<font color='#FF0000'>ВКЛЮЧИТЕ ИНТЕРНЕТ!!!!</font>"));
+                builder.show();
+
+            } else {
+                Navigation.findNavController(LocationFragment.this.
+                        requireView()).navigate(LocationFragmentDirections.actionLocationFragmentToLocationDetailFragment(id));
+            }
+        });
+
     }
 
     @Override
@@ -57,55 +73,70 @@ public class LocationFragment extends BaseFragment<LocationViewModel, FragmentLo
 
     @Override
     protected void setUpObservers() {
-        viewModel.loadingLocation().observe(getViewLifecycleOwner(), isLoading -> {
-            if (isLoading) {
-                binding.loaderLocation.setVisibility(View.VISIBLE);
-                binding.recyclerLocation.setVisibility(View.GONE);
+        if (!isOnline()) {
+            if (App.locationDao.getAnyRecipe().isEmpty()) {
+                Toast.makeText(getContext(), "ДАННЫХ НЕТ! ВКЛЮЧИТЕ ИНТЕРНЕТ", Toast.LENGTH_SHORT).show();
             } else {
-                binding.loaderLocation.setVisibility(View.GONE);
-                binding.recyclerLocation.setVisibility(View.VISIBLE);
+                Toast.makeText(getContext(), "OFF-LINE", Toast.LENGTH_SHORT).show();
+                adapter.submitList(viewModel.getLocation());
             }
-        });
-        viewModel.fetchLocations().observe(getViewLifecycleOwner(), location -> {
-            if (location != null){
-                locationModels.addAll(location.getResults());
-                adapter.submitList(locationModels);
-                String next = location.getInfo().getNext();
-                if (next != null) {
-                    binding.recyclerLocation.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                        @Override
-                        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                            super.onScrolled(recyclerView, dx, dy);
-                            if (dy > 0) {
-                                viewModel.loadingLocation().observe(getViewLifecycleOwner(), isLoading -> {
-                                    if (isLoading) {
-                                        binding.loaderLocation.setVisibility(View.GONE);
-                                        binding.recyclerLocation.setVisibility(View.VISIBLE);
-                                        binding.loaderLocationBar.setVisibility(View.VISIBLE);
-                                    } else {
-                                        binding.loaderLocationBar.setVisibility(View.GONE);
-                                    }
-                                });
-                                visibleItemCount = layoutManager.getChildCount();
-                                totalItemCount = layoutManager.getItemCount();
-                                pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
-                                if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                                    viewModel.page++;
-                                    viewModel.fetchLocations().observe(getViewLifecycleOwner(), new Observer<RickAndMortyResponse<LocationModel>>() {
-                                        @Override
-                                        public void onChanged(RickAndMortyResponse<LocationModel> locationModelRickAndMortyResponse) {
-                                            if (locationModelRickAndMortyResponse != null) {
-                                                locationModels.addAll(locationModelRickAndMortyResponse.getResults());
-                                                adapter.submitList(locationModels);
-                                            }
+        } else {
+            viewModel.fetchLocations().observe(getViewLifecycleOwner(), location -> {
+                if (location != null) {
+                    locationModels.addAll(location.getResults());
+                    adapter.submitList(locationModels);
+                    String next = location.getInfo().getNext();
+                    if (next != null) {
+                        binding.recyclerLocation.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                            @Override
+                            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                                super.onScrolled(recyclerView, dx, dy);
+                                if (dy > 0) {
+                                    viewModel.loadingLocation().observe(getViewLifecycleOwner(), isLoading -> {
+                                        if (isLoading) {
+                                            binding.loaderLocation.setVisibility(View.GONE);
+                                            binding.recyclerLocation.setVisibility(View.VISIBLE);
+                                            binding.loaderLocationBar.setVisibility(View.VISIBLE);
+                                        } else {
+                                            binding.loaderLocationBar.setVisibility(View.GONE);
                                         }
                                     });
+                                    visibleItemCount = layoutManager.getChildCount();
+                                    totalItemCount = layoutManager.getItemCount();
+                                    pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+                                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                                        viewModel.page++;
+                                        viewModel.fetchLocations().observe(getViewLifecycleOwner(), new Observer<RickAndMortyResponse<LocationModel>>() {
+                                            @Override
+                                            public void onChanged(RickAndMortyResponse<LocationModel> locationModelRickAndMortyResponse) {
+                                                if (locationModelRickAndMortyResponse != null) {
+                                                    locationModels.addAll(locationModelRickAndMortyResponse.getResults());
+                                                    adapter.submitList(locationModels);
+                                                }
+                                            }
+                                        });
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
-            }
-        });
+            });
+            viewModel.loadingLocation().observe(getViewLifecycleOwner(), isLoading -> {
+                if (isLoading) {
+                    binding.loaderLocation.setVisibility(View.VISIBLE);
+                    binding.recyclerLocation.setVisibility(View.GONE);
+                } else {
+                    binding.loaderLocation.setVisibility(View.GONE);
+                    binding.recyclerLocation.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

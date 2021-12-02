@@ -1,9 +1,9 @@
 package com.example.android3lesson2.ui.fragments.episode;
 
-import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -15,11 +15,12 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.android3lesson2.adapters.EpisodeAdapter;
 import com.example.android3lesson2.base.BaseFragment;
 import com.example.android3lesson2.data.network.dtos.RickAndMortyResponse;
 import com.example.android3lesson2.data.network.dtos.episode.EpisodeModel;
 import com.example.android3lesson2.databinding.FragmentEpisodeBinding;
+import com.example.android3lesson2.ui.adapters.EpisodeAdapter;
+import com.example.android3lesson2.utils.App;
 
 import java.util.ArrayList;
 
@@ -48,66 +49,82 @@ public class EpisodeFragment extends BaseFragment<EpisodeViewModel, FragmentEpis
 
     @Override
     protected void setupListeners() {
-        adapter.setOnItemClickListener(id -> Navigation.findNavController(EpisodeFragment.this.requireView()).navigate(
-                EpisodeFragmentDirections.actionEpisodeFragmentToEpisodeDetailFragment(id)
-        ));
+        adapter.setOnItemClickListener(id -> {
+            if (!isOnline()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+                builder.setTitle(Html.fromHtml("<font color='#FF0000'>ФУНКЦИЯ НЕ ДОСТУПНА</font>"));
+                builder.setMessage(Html.fromHtml("<font color='#FF0000'>ВКЛЮЧИТЕ ИНТЕРНЕТ!!!!</font>"));
+                builder.show();
+            } else {
+                Navigation.findNavController(EpisodeFragment.this.requireView()).navigate(
+                        EpisodeFragmentDirections.actionEpisodeFragmentToEpisodeDetailFragment(id)
+                );
+            }
+        });
     }
-
 
     @Override
     protected void setUpObservers() {
-        viewModel.loadingEpisode().observe(getViewLifecycleOwner(), isLoading -> {
-            if (isLoading) {
-                binding.loaderEpisode.setVisibility(View.VISIBLE);
-                binding.recyclerEpisode.setVisibility(View.GONE);
+        if (!isOnline()) {
+            if (App.episodeDao.getAnyRecipe().isEmpty()) {
+                Toast.makeText(getContext(), "ДАННЫХ НЕТ! ВКЛЮЧИТЕ ИНТЕРНЕТ", Toast.LENGTH_SHORT).show();
             } else {
-                binding.loaderEpisode.setVisibility(View.GONE);
-                binding.recyclerEpisode.setVisibility(View.VISIBLE);
+                Toast.makeText(getContext(), "OFF-LINE", Toast.LENGTH_SHORT).show();
+                adapter.submitList(viewModel.getEpisode());
             }
-        });
-        viewModel.fetchEpisodes().observe(getViewLifecycleOwner(), new Observer<RickAndMortyResponse<EpisodeModel>>() {
-            @Override
-            public void onChanged(RickAndMortyResponse<EpisodeModel> episode) {
-                if (episode != null){
-                    episodeModels.addAll(episode.getResults());
-                adapter.submitList(episodeModels);
-                String next = episode.getInfo().getNext();
-                if (next != null) {
-                    binding.recyclerEpisode.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                        @Override
-                        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                            super.onScrolled(recyclerView, dx, dy);
-                            if (dy > 0) {
+        } else {
+            viewModel.fetchEpisodes().observe(getViewLifecycleOwner(), new Observer<RickAndMortyResponse<EpisodeModel>>() {
+                @Override
+                public void onChanged(RickAndMortyResponse<EpisodeModel> episode) {
+                    if (episode != null) {
+                        episodeModels.addAll(episode.getResults());
+                        adapter.submitList(episodeModels);
+                        String next = episode.getInfo().getNext();
+                        if (next != null) {
+                            binding.recyclerEpisode.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                                @Override
+                                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                                    super.onScrolled(recyclerView, dx, dy);
+                                    if (dy > 0) {
 
-                                viewModel.loadingEpisode().observe(getViewLifecycleOwner(), isLoading -> {
-                                    if (isLoading) {
-                                        binding.loaderEpisode.setVisibility(View.GONE);
-                                        binding.recyclerEpisode.setVisibility(View.VISIBLE);
-                                        binding.loaderEpisodeBar.setVisibility(View.VISIBLE);
-                                    } else {
-                                        binding.loaderEpisodeBar.setVisibility(View.GONE);
-                                    }
-                                });
-                                visibleItemCount = layoutManager.getChildCount();
-                                totalItemCount = layoutManager.getItemCount();
-                                pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
-                                if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                                    viewModel.page++;
-                                    viewModel.fetchEpisodes().observe(getViewLifecycleOwner(), episodeModelRickAndMortyResponse -> {
-                                        if (episodeModelRickAndMortyResponse != null) {
-                                            episodeModels.addAll(episodeModelRickAndMortyResponse.getResults());
-                                            adapter.submitList(episodeModels);
+                                        viewModel.loadingEpisode().observe(getViewLifecycleOwner(), isLoading -> {
+                                            if (isLoading) {
+                                                binding.loaderEpisode.setVisibility(View.GONE);
+                                                binding.recyclerEpisode.setVisibility(View.VISIBLE);
+                                                binding.loaderEpisodeBar.setVisibility(View.VISIBLE);
+                                            } else {
+                                                binding.loaderEpisodeBar.setVisibility(View.GONE);
+                                            }
+                                        });
+                                        visibleItemCount = layoutManager.getChildCount();
+                                        totalItemCount = layoutManager.getItemCount();
+                                        pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+                                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                                            viewModel.page++;
+                                            viewModel.fetchEpisodes().observe(getViewLifecycleOwner(), episodeModelRickAndMortyResponse -> {
+                                                if (episodeModelRickAndMortyResponse != null) {
+                                                    episodeModels.addAll(episodeModelRickAndMortyResponse.getResults());
+                                                    adapter.submitList(episodeModels);
+                                                }
+                                            });
                                         }
-                                    });
+                                    }
                                 }
-                            }
+                            });
                         }
-                    });
+                    }
                 }
-            }
-            }
-        });
-
+            });
+            viewModel.loadingEpisode().observe(getViewLifecycleOwner(), isLoading -> {
+                if (isLoading) {
+                    binding.loaderEpisode.setVisibility(View.VISIBLE);
+                    binding.recyclerEpisode.setVisibility(View.GONE);
+                } else {
+                    binding.loaderEpisode.setVisibility(View.GONE);
+                    binding.recyclerEpisode.setVisibility(View.VISIBLE);
+                }
+            });
+        }
     }
 
     @Override

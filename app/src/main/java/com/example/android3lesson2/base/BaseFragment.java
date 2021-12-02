@@ -1,5 +1,8 @@
 package com.example.android3lesson2.base;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 
@@ -8,9 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewbinding.ViewBinding;
 
-public abstract class BaseFragment<ViewModel extends BaseViewModel, Binding extends ViewBinding> extends Fragment  {
+public abstract class BaseFragment<ViewModel extends BaseViewModel, Binding extends ViewBinding> extends Fragment {
 
-    protected  ViewModel viewModel;
+    protected ViewModel viewModel;
     protected Binding binding;
 
     @Override
@@ -19,13 +22,15 @@ public abstract class BaseFragment<ViewModel extends BaseViewModel, Binding exte
         initialization();
         setupListeners();
         setupViews();
+        isOnline();
         setUpObservers();
     }
+
 
     protected void setUpObservers() {
     }
 
-    protected  void setupViews(){
+    protected void setupViews() {
 
     }
 
@@ -34,5 +39,15 @@ public abstract class BaseFragment<ViewModel extends BaseViewModel, Binding exte
 
 
     protected void initialization() {
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager connMgr = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

@@ -13,5 +13,5 @@ public interface LocationApiService {
     Call<RickAndMortyResponse<LocationModel>> fetchLocations(@Query("page") int page);
 
     @GET("/api/location/{id}")
-    Call<LocationModel> fetchLocation(@Path("id")int id);
+    Call<LocationModel> fetchLocation(@Path("id") int id);
 }

@@ -1,4 +1,4 @@
-package com.example.android3lesson2.adapters;
+package com.example.android3lesson2.ui.adapters;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;

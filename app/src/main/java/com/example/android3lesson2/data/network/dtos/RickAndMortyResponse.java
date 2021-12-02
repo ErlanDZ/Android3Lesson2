@@ -2,6 +2,7 @@ package com.example.android3lesson2.data.network.dtos;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RickAndMortyResponse<T> {
@@ -20,8 +21,8 @@ public class RickAndMortyResponse<T> {
         this.info = info;
     }
 
-    public List<T> getResults() {
-        return results;
+    public ArrayList<T> getResults() {
+        return (ArrayList<T>) results;
     }
 
     public void setResults(List<T> results) {

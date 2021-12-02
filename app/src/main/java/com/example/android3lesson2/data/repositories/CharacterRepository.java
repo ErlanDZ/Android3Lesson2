@@ -2,9 +2,11 @@ package com.example.android3lesson2.data.repositories;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.android3lesson2.utils.App;
 import com.example.android3lesson2.data.network.dtos.RickAndMortyResponse;
 import com.example.android3lesson2.data.network.dtos.сharacter.Character;
+import com.example.android3lesson2.utils.App;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,6 +22,7 @@ public class CharacterRepository {
         App.characterApiService.fetchCharacters(page).enqueue(new Callback<RickAndMortyResponse<Character>>() {
             @Override
             public void onResponse(Call<RickAndMortyResponse<Character>> call, Response<RickAndMortyResponse<Character>> response) {
+                App.characterDao.insert(response.body().getResults());
                 data.setValue(response.body());
                 _isLoading.setValue(false);
             }
@@ -34,8 +37,8 @@ public class CharacterRepository {
     }
 
 
-    public MutableLiveData<Character> fetchCharacter(int id){
-         MutableLiveData<Character> _character = new MutableLiveData<>();
+    public MutableLiveData<Character> fetchCharacter(int id) {
+        MutableLiveData<Character> _character = new MutableLiveData<>();
         _isLoading.setValue(true);
         App.characterApiService.fetchCharacter(id).enqueue(new Callback<Character>() {
             @Override
@@ -52,4 +55,9 @@ public class CharacterRepository {
         });
         return _character;
     }
+
+    public List<Character> getCharacters() {
+        return App.characterDao.getAll();
+    }
+
 }
