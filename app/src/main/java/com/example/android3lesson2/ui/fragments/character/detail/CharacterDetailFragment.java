@@ -12,7 +12,9 @@ import com.example.android3lesson2.R;
 import com.example.android3lesson2.base.BaseFragment;
 import com.example.android3lesson2.databinding.FragmentCaracterDetailBinding;
 
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class CharacterDetailFragment extends BaseFragment<CharacterDetailVIewModel, FragmentCaracterDetailBinding> {
 
     @Override

@@ -24,16 +24,18 @@ import com.example.android3lesson2.utils.App;
 
 import java.util.ArrayList;
 
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class EpisodeFragment extends BaseFragment<EpisodeViewModel, FragmentEpisodeBinding> {
 
     EpisodeAdapter adapter = new EpisodeAdapter();
     private LinearLayoutManager layoutManager;
     private int totalItemCount, visibleItemCount, pastVisibleItems;
-    private ArrayList<EpisodeModel> episodeModels = new ArrayList<>();
+    private final ArrayList<EpisodeModel> episodeModels = new ArrayList<>();
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentEpisodeBinding.inflate(getLayoutInflater(), container, false);
         return binding.getRoot();
@@ -66,7 +68,7 @@ public class EpisodeFragment extends BaseFragment<EpisodeViewModel, FragmentEpis
     @Override
     protected void setUpObservers() {
         if (!isOnline()) {
-            if (App.episodeDao.getAnyRecipe().isEmpty()) {
+            if (viewModel.getEpisode().isEmpty()) {
                 Toast.makeText(getContext(), "ДАННЫХ НЕТ! ВКЛЮЧИТЕ ИНТЕРНЕТ", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getContext(), "OFF-LINE", Toast.LENGTH_SHORT).show();
@@ -86,8 +88,8 @@ public class EpisodeFragment extends BaseFragment<EpisodeViewModel, FragmentEpis
                                 public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                                     super.onScrolled(recyclerView, dx, dy);
                                     if (dy > 0) {
-
                                         viewModel.loadingEpisode().observe(getViewLifecycleOwner(), isLoading -> {
+                                            viewModel.page++;
                                             if (isLoading) {
                                                 binding.loaderEpisode.setVisibility(View.GONE);
                                                 binding.recyclerEpisode.setVisibility(View.VISIBLE);
@@ -100,13 +102,18 @@ public class EpisodeFragment extends BaseFragment<EpisodeViewModel, FragmentEpis
                                         totalItemCount = layoutManager.getItemCount();
                                         pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
                                         if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                                            viewModel.page++;
-                                            viewModel.fetchEpisodes().observe(getViewLifecycleOwner(), episodeModelRickAndMortyResponse -> {
-                                                if (episodeModelRickAndMortyResponse != null) {
-                                                    episodeModels.addAll(episodeModelRickAndMortyResponse.getResults());
-                                                    adapter.submitList(episodeModels);
-                                                }
-                                            });
+                                            if (!isOnline()){
+                                                binding.loaderEpisodeBar.setVisibility(View.GONE);
+                                                Toast.makeText(getContext(), "OFF-LINE", Toast.LENGTH_SHORT).show();
+                                            }else{
+                                                viewModel.page++;
+                                                viewModel.fetchEpisodes().observe(getViewLifecycleOwner(), episodeModelRickAndMortyResponse -> {
+                                                    if (episodeModelRickAndMortyResponse != null) {
+                                                        episodeModels.addAll(episodeModelRickAndMortyResponse.getResults());
+                                                        adapter.submitList(episodeModels);
+                                                    }
+                                                });
+                                            }
                                         }
                                     }
                                 }

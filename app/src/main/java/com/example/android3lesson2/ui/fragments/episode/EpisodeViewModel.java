@@ -9,8 +9,20 @@ import com.example.android3lesson2.data.repositories.EpisodeRepository;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
+
+@HiltViewModel
 public class EpisodeViewModel extends BaseViewModel {
-    private final EpisodeRepository episodeRepository = new EpisodeRepository();
+
+    private final EpisodeRepository episodeRepository;
+
+    @Inject
+    public EpisodeViewModel(EpisodeRepository episodeRepository) {
+        this.episodeRepository = episodeRepository;
+    }
+
     public int page = 1;
 
     public LiveData<RickAndMortyResponse<EpisodeModel>> fetchEpisodes() {

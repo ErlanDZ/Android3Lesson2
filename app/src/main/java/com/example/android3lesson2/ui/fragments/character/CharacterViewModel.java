@@ -9,22 +9,33 @@ import com.example.android3lesson2.data.repositories.CharacterRepository;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
+
+@HiltViewModel
 public class CharacterViewModel extends BaseViewModel {
 
-    private final CharacterRepository characterRepository = new CharacterRepository();
+    private final  CharacterRepository repository;
+
+    @Inject
+    public CharacterViewModel(CharacterRepository repository) {
+        this.repository = repository;
+    }
+
     public int page = 1;
 
 
     public LiveData<RickAndMortyResponse<Character>> fetchCharacters() {
-        return characterRepository.fetchCharacters(page);
+        return repository.fetchCharacters(page);
     }
 
     public LiveData<Boolean> loadingCharacter() {
-        return characterRepository._isLoading;
+        return repository._isLoading;
     }
 
     List<Character> getCharacter() {
-        return characterRepository.getCharacters();
+        return repository.getCharacters();
     }
 
 }

@@ -1,5 +1,7 @@
 package com.example.android3lesson2.data.network.dtos;
 
+import com.example.android3lesson2.data.network.dtos.episode.EpisodeModel;
+import com.example.android3lesson2.data.network.dtos.сharacter.Character;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;

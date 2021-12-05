@@ -10,9 +10,19 @@ import com.example.android3lesson2.data.repositories.LocationRepository;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
+
+@HiltViewModel
 public class LocationViewModel extends BaseViewModel {
 
-    private final LocationRepository locationRepository = new LocationRepository();
+    @Inject
+    public LocationViewModel(LocationRepository locationRepository) {
+        this.locationRepository = locationRepository;
+    }
+
+    private final LocationRepository locationRepository;
     public int page = 1;
 
     public LiveData<RickAndMortyResponse<LocationModel>> fetchLocations() {

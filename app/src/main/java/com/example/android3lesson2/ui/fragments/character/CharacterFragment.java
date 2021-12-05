@@ -19,17 +19,19 @@ import com.example.android3lesson2.data.network.dtos.сharacter.Character;
 import com.example.android3lesson2.data.network.onItemClick.OnItemClick;
 import com.example.android3lesson2.databinding.FragmentCharacterBinding;
 import com.example.android3lesson2.ui.adapters.CharacterAdapter;
-import com.example.android3lesson2.utils.App;
 
 import java.util.ArrayList;
 
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class CharacterFragment extends BaseFragment<CharacterViewModel, FragmentCharacterBinding> {
 
     private final CharacterAdapter adapter = new CharacterAdapter();
     private final ArrayList<Character> characters = new ArrayList<>();
     private LinearLayoutManager layoutManager;
     private int totalItemCount, visibleItemCount, pastVisibleItems;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -58,7 +60,6 @@ public class CharacterFragment extends BaseFragment<CharacterViewModel, Fragment
                     builder.setTitle(Html.fromHtml("<font color='#FF0000'>ФУНКЦИЯ НЕ ДОСТУПНА</font>"));
                     builder.setMessage(Html.fromHtml("<font color='#FF0000'>ВКЛЮЧИТЕ ИНТЕРНЕТ!!!!</font>"));
                     builder.show();
-
                 } else {
                     Navigation.findNavController(CharacterFragment.this.requireView()).navigate(
                             CharacterFragmentDirections.actionCharacterFragmentToCharacterDetailFragment(id)
@@ -77,7 +78,7 @@ public class CharacterFragment extends BaseFragment<CharacterViewModel, Fragment
     @Override
     protected void setUpObservers() {
         if (!isOnline()) {
-            if (App.characterDao.getAnyRecipe().isEmpty()) {
+            if (viewModel.getCharacter().isEmpty()) {
                 Toast.makeText(getContext(), "ДАННЫХ НЕТ! ВКЛЮЧИТЕ ИНТЕРНЕТ", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getContext(), "OFF-LINE", Toast.LENGTH_SHORT).show();
@@ -109,17 +110,23 @@ public class CharacterFragment extends BaseFragment<CharacterViewModel, Fragment
                                     totalItemCount = layoutManager.getItemCount();
                                     pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
                                     if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                                        viewModel.page++;
-                                        viewModel.fetchCharacters().observe(getViewLifecycleOwner(), character1 -> {
-                                            if (character1 != null) {
-                                                characters.addAll(character1.getResults());
-                                                adapter.submitList(characters);
-                                            }
-                                        });
+                                        if (!isOnline()){
+                                            binding.loaderCharacterBar.setVisibility(View.GONE);
+                                            Toast.makeText(getContext(), "OFF-LINE", Toast.LENGTH_SHORT).show();
+                                        }else {
+                                            viewModel.page++;
+                                            viewModel.fetchCharacters().observe(getViewLifecycleOwner(), character1 -> {
+                                                if (character1 != null) {
+                                                    characters.addAll(character1.getResults());
+                                                    adapter.submitList(characters);
+                                                }
+                                            });
+                                        }
                                     }
                                 }
                             }
                         });
+
                     }
                 }
             });

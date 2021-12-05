@@ -24,17 +24,19 @@ import com.example.android3lesson2.utils.App;
 
 import java.util.ArrayList;
 
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class LocationFragment extends BaseFragment<LocationViewModel, FragmentLocationBinding> {
 
     LocationAdapter adapter = new LocationAdapter();
-    private ArrayList<LocationModel> locationModels = new ArrayList<>();
+    private final ArrayList<LocationModel> locationModels = new ArrayList<>();
 
     private LinearLayoutManager layoutManager;
     private int totalItemCount, visibleItemCount, pastVisibleItems;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentLocationBinding.inflate(getLayoutInflater(), container, false);
         return binding.getRoot();
@@ -74,7 +76,7 @@ public class LocationFragment extends BaseFragment<LocationViewModel, FragmentLo
     @Override
     protected void setUpObservers() {
         if (!isOnline()) {
-            if (App.locationDao.getAnyRecipe().isEmpty()) {
+            if (viewModel.getLocation().isEmpty()) {
                 Toast.makeText(getContext(), "ДАННЫХ НЕТ! ВКЛЮЧИТЕ ИНТЕРНЕТ", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getContext(), "OFF-LINE", Toast.LENGTH_SHORT).show();
@@ -105,16 +107,18 @@ public class LocationFragment extends BaseFragment<LocationViewModel, FragmentLo
                                     totalItemCount = layoutManager.getItemCount();
                                     pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
                                     if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                                        viewModel.page++;
-                                        viewModel.fetchLocations().observe(getViewLifecycleOwner(), new Observer<RickAndMortyResponse<LocationModel>>() {
-                                            @Override
-                                            public void onChanged(RickAndMortyResponse<LocationModel> locationModelRickAndMortyResponse) {
+                                        if (!isOnline()){
+                                            binding.loaderLocationBar.setVisibility(View.GONE);
+                                            Toast.makeText(getContext(), "OFF-LINE", Toast.LENGTH_SHORT).show();
+                                        }else {
+                                            viewModel.page++;
+                                            viewModel.fetchLocations().observe(getViewLifecycleOwner(), locationModelRickAndMortyResponse -> {
                                                 if (locationModelRickAndMortyResponse != null) {
                                                     locationModels.addAll(locationModelRickAndMortyResponse.getResults());
                                                     adapter.submitList(locationModels);
                                                 }
-                                            }
-                                        });
+                                            });
+                                        }
                                     }
                                 }
                             }
